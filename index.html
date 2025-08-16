@@ -9,15 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg: #0f172a;          /* slate-900 */
+      --bg: #0f172a;         
       --card: rgba(255,255,255,0.08);
       --card-border: rgba(255,255,255,0.12);
-      --text: #e5e7eb;        /* gray-200 */
-      --muted: #94a3b8;       /* slate-400 */
-      --accent: #22d3ee;      /* cyan-400 */
-      --accent-2: #a78bfa;    /* violet-400 */
-      --ok: #34d399;          /* emerald-400 */
-      --danger: #f87171;      /* red-400 */
+      --text: #e5e7eb;       
+      --muted: #94a3b8;       
+      --accent: #22d3ee;     
+      --accent-2: #a78bfa;   
+      --ok: #34d399;          
+      --danger: #f87171;     
       --shadow: 0 10px 30px rgba(0,0,0,0.35);
       --radius: 18px;
     }
@@ -95,7 +95,7 @@
       border:1px solid var(--card-border);
       border-radius: 14px;
       transition: transform .15s ease, background .15s ease, border-color .15s ease;
-      order: 1; /* unchecked go first */
+      order: 1; 
     }
     .task:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.07); }
     .task:has(input:checked){ order: 2; opacity: 0.75; }
@@ -133,23 +133,23 @@
 
     .hint{ font-size:12px; color: var(--muted); }
 
-    /* Progress bar based on counters (visual only) */
+    
     .progress{ position:relative; height:10px; background: rgba(255,255,255,0.06); border-radius:999px; overflow:hidden; border:1px solid var(--card-border); }
     .progress::before{
       content:""; position:absolute; inset:0; inline-size:0%; block-size:100%;
       background: linear-gradient(90deg, var(--ok), var(--accent));
-      /* Fallback: set width via attribute when editing HTML (no JS). */
+     
       width: var(--pct, 0%);
       transition: width .25s ease;
     }
 
-    /* Responsive */
+    
     @media (max-width:520px){
       header{ flex-direction:column; align-items:flex-start; gap:8px; }
       .title{ width:100%; justify-content:space-between; }
     }
 
-    /* Print */
+    
     @media print{
       body{ background:white; }
       .app{ box-shadow:none; background:white; border-color:#ddd; }
@@ -173,7 +173,7 @@
 
     <section class="list" aria-label="Tasks">
 
-      <!-- Example tasks. Edit text inline. Duplicate a .task block to add more (no JS needed). -->
+     
 
       <label class="task">
         <span class="check" aria-hidden="true">
@@ -243,14 +243,8 @@
     </footer>
   </main>
 
-  <!--
-    Notes (no JavaScript):
-    • Edit text inline (titles and task labels are contenteditable).
-    • Add tasks by copying a <label class="task">…</label> block.
-    • The counter in the header updates automatically using CSS counters.
-    • The progress bar width is a visual aid; update --pct on .app to match your completion %.
 
-    Want auto‑save, add/remove buttons, or real progress calculation? Ask for the JS version.
-  -->
+   
 </body>
 </html>
+
