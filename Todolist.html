@@ -1,0 +1,256 @@
+
+</html><html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>To‑Do List — HTML + CSS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0f172a;          /* slate-900 */
+      --card: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.12);
+      --text: #e5e7eb;        /* gray-200 */
+      --muted: #94a3b8;       /* slate-400 */
+      --accent: #22d3ee;      /* cyan-400 */
+      --accent-2: #a78bfa;    /* violet-400 */
+      --ok: #34d399;          /* emerald-400 */
+      --danger: #f87171;      /* red-400 */
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    html, body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1200px 800px at 15% 10%, rgba(34,211,238,0.12), transparent 60%),
+        radial-gradient(1000px 700px at 85% 30%, rgba(167,139,250,0.12), transparent 60%),
+        linear-gradient(180deg, #0b1023, var(--bg));
+      display:grid;
+      place-items:center;
+      padding: 32px;
+    }
+
+    .app{
+      width:min(760px, 100%);
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    header{
+      padding: 24px 28px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 16px;
+      border-bottom:1px solid var(--card-border);
+    }
+
+    .title{
+      display:flex; align-items:center; gap:12px;
+    }
+    .logo{
+      inline-size: 36px; block-size: 36px;
+      display:grid; place-items:center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: inset 0 0 14px rgba(255,255,255,0.25), 0 8px 20px rgba(34,211,238,0.35);
+      font-weight:800; color:#0b1023;
+    }
+    h1{font-size: clamp(18px, 2vw, 22px); margin:0}
+    .muted{color: var(--muted); font-size: 14px}
+
+    /* Counters: total vs completed */
+    .list{
+      counter-reset: done total;
+      display:flex; flex-direction:column; gap:10px;
+      padding: 22px 28px 28px;
+    }
+    .task{ counter-increment: total; }
+    .task:has(input:checked){ counter-increment: done; }
+
+    .stats{ font-size:14px; color: var(--muted); }
+    .stats::after{
+      content: "Completed " counter(done) " / " counter(total);
+      margin-left: 6px;
+      color: var(--text);
+      font-weight:600;
+    }
+
+    /* Task item */
+    .task{
+      display:flex; align-items:center; gap:14px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.05);
+      border:1px solid var(--card-border);
+      border-radius: 14px;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      order: 1; /* unchecked go first */
+    }
+    .task:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.07); }
+    .task:has(input:checked){ order: 2; opacity: 0.75; }
+
+    .check{
+      position:relative; inline-size:22px; block-size:22px;
+      border-radius:8px; border:1.5px solid var(--muted);
+      display:grid; place-items:center; flex:0 0 22px; cursor:pointer;
+      transition:border-color .2s ease, background .2s ease;
+    }
+    .check svg{ inline-size:14px; block-size:14px; opacity:0; transform: scale(.8); transition: .2s ease; }
+
+    input[type="checkbox"]{ appearance:none; position:absolute; inset:0; margin:0; cursor:pointer; }
+
+    .task:has(input:checked) .check{
+      border-color: transparent; background: linear-gradient(135deg, var(--ok), var(--accent));
+    }
+    .task:has(input:checked) .check svg{ opacity:1; transform: scale(1); }
+
+    .label{ flex:1; font-size:16px; line-height:1.4 }
+    .label[contenteditable="true"]{ outline:none; }
+    .label[contenteditable="true"]:focus{ box-shadow: inset 0 -2px 0 var(--accent); }
+
+    .tag{ font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid var(--card-border); color: var(--muted); }
+
+    .pill{
+      display:inline-grid; grid-auto-flow:column; align-items:center; gap:8px;
+      padding: 8px 12px; border-radius:999px; border:1px dashed var(--card-border); color:var(--muted); font-size:12px;
+    }
+
+    footer{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;
+      padding: 16px 28px 28px;
+    }
+
+    .hint{ font-size:12px; color: var(--muted); }
+
+    /* Progress bar based on counters (visual only) */
+    .progress{ position:relative; height:10px; background: rgba(255,255,255,0.06); border-radius:999px; overflow:hidden; border:1px solid var(--card-border); }
+    .progress::before{
+      content:""; position:absolute; inset:0; inline-size:0%; block-size:100%;
+      background: linear-gradient(90deg, var(--ok), var(--accent));
+      /* Fallback: set width via attribute when editing HTML (no JS). */
+      width: var(--pct, 0%);
+      transition: width .25s ease;
+    }
+
+    /* Responsive */
+    @media (max-width:520px){
+      header{ flex-direction:column; align-items:flex-start; gap:8px; }
+      .title{ width:100%; justify-content:space-between; }
+    }
+
+    /* Print */
+    @media print{
+      body{ background:white; }
+      .app{ box-shadow:none; background:white; border-color:#ddd; }
+      .task{ background:#fff; border-color:#ddd; }
+      .logo{ box-shadow:none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" style="--pct: 40%">
+    <header>
+      <div class="title">
+        <div class="logo">✓</div>
+        <div>
+          <h1 contenteditable="true" spellcheck="false">My To‑Do List</h1>
+          <div class="muted">Reorder automatically: completed items drop to the bottom</div>
+        </div>
+      </div>
+      <div class="stats" aria-live="polite"></div>
+    </header>
+
+    <section class="list" aria-label="Tasks">
+
+      <!-- Example tasks. Edit text inline. Duplicate a .task block to add more (no JS needed). -->
+
+      <label class="task">
+        <span class="check" aria-hidden="true">
+          <input type="checkbox" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+        <span class="label" contenteditable="true" spellcheck="false">Review yesterday's notes</span>
+        <span class="tag">Today</span>
+      </label>
+
+      <label class="task">
+        <span class="check" aria-hidden="true">
+          <input type="checkbox" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+        <span class="label" contenteditable="true" spellcheck="false">Apply to 2 jobs</span>
+        <span class="tag">Career</span>
+      </label>
+
+      <label class="task">
+        <span class="check" aria-hidden="true">
+          <input type="checkbox" checked />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+        <span class="label" contenteditable="true" spellcheck="false">30‑min DSA practice</span>
+        <span class="tag">Learning</span>
+      </label>
+
+      <label class="task">
+        <span class="check" aria-hidden="true">
+          <input type="checkbox" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+        <span class="label" contenteditable="true" spellcheck="false">Walk 20 minutes</span>
+        <span class="tag">Health</span>
+      </label>
+
+      <label class="task">
+        <span class="check" aria-hidden="true">
+          <input type="checkbox" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+        <span class="label" contenteditable="true" spellcheck="false">Call mom</span>
+        <span class="tag">Personal</span>
+      </label>
+
+    </section>
+
+    <footer>
+      <div class="pill" title="How to add tasks">
+        <span>➕ Duplicate any task block to add more</span>
+      </div>
+      <div style="flex:1; min-width:220px; margin-left:12px">
+        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" aria-label="Completion"></div>
+        <div class="hint">Tip: Completed items are dimmed and automatically sorted to the bottom.</div>
+      </div>
+    </footer>
+  </main>
+
+  <!--
+    Notes (no JavaScript):
+    • Edit text inline (titles and task labels are contenteditable).
+    • Add tasks by copying a <label class="task">…</label> block.
+    • The counter in the header updates automatically using CSS counters.
+    • The progress bar width is a visual aid; update --pct on .app to match your completion %.
+
+    Want auto‑save, add/remove buttons, or real progress calculation? Ask for the JS version.
+  -->
+</body>
+</html>
